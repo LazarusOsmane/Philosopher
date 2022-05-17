@@ -12,6 +12,9 @@ philo: $(OBJ)
 	#cd share/Printf/ && make && cd ../../
 	gcc $(CFLAG) -c $^ -o $@ 
 
+ff: $(OBJ)
+	gcc -fsanitize=thread  $(CFLAG) $(OBJ) -o philo  share/libft/libft.a
+
 clean: 
 	rm src/*.o
 

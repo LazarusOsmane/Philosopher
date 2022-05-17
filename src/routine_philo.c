@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine_philo.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
+/*   By: engooh <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/14 14:19:24 by christellen       #+#    #+#             */
-/*   Updated: 2022/05/14 20:13:45christellen      ###   ########.fr       */
+/*   Created: 2022/05/16 08:22:55 by engooh            #+#    #+#             */
+/*   Updated: 2022/05/17 18:03:19 by engooh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,34 +20,66 @@ long int	timestamp(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-int		wait_philo(t_all *all, int i)
+void	ft_usleep(ssize_t time)
 {
-	i = -1;
-	pthread_detach(all->philo[all->nbp].thrid);
-	while (++i < all->nbp)
-		pthread_join(all->philo[i].thrid, NULL);
-	return (0);
+	ssize_t		t;
+
+	t = timestamp();
+	while (timestamp() - t < time)
+	{
+	}
 }
 
-void	*routine(void *argc)
+void	wait_philo(t_data *a, int i)
 {
-	t_all			*all;
-	t_philosopher	*philo;
+	while (++i < a->nbp_std)
+		pthread_join(a->philo[i].thrid, NULL);
+}
 
-	philo = argc;
-	all = philo->ptr_all;
-	pthread_mutex_lock(&all->main);
-	while (1)
+void	status_philo(t_philo *p, char *str, int status)
+{
+	if (status == 1)
 	{
-		if (philo->is_dead)
-		{
-			status_eat(all, philo);
-			status_sleep(all, philo);
-		}
-		else
-			return (NULL);
+		pthread_mutex_lock(&p->data->lock);
+		p->ect++;
+		p->tte = timestamp();
+		printf("[%ld] [%d] %s", timestamp() - p->data->genese, p->idx, str);
+		ft_usleep(p->data->tte_std);
+		pthread_mutex_unlock(&p->data->lock);
 	}
-	pthread_mutex_unlock(&all->main);
+	if (status == 2)
+	{
+		pthread_mutex_lock(&p->data->lock);
+		printf("[%ld] [%d] %s", timestamp() - p->data->genese, p->idx, str);
+		ft_usleep(p->data->tts_std);
+		pthread_mutex_unlock(&p->data->lock);
+	}
+	if (status == 3)
+	{
+		pthread_mutex_lock(&p->data->lock);
+		printf("[%ld] [%d] %s", timestamp() - p->data->genese, p->idx, str);
+		pthread_mutex_unlock(&p->data->lock);
+	}
+}
+
+void	*routine(void *philo)
+{
+	t_philo	*p;
+
+	p = philo;
+	pthread_mutex_lock(&p->fork);
+	if (!pthread_mutex_lock(&p->data->philo[p->next].fork))
+	{
+		pthread_mutex_lock(&p->data->eat);
+		status_philo(p, "is eating\n", 1);
+		pthread_mutex_unlock(&p->data->eat);
+	}
+	else
+	{
+		status_philo(p, "is sleeping\n", 2);
+		status_philo(p, "is thinking\n", 3);
+	}
+	pthread_mutex_unlock(&p->data->philo[p->next].fork);
+	pthread_mutex_unlock(&p->fork);
 	return (NULL);
 }
-

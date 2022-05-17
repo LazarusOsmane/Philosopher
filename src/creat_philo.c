@@ -3,88 +3,83 @@
 /*                                                        :::      ::::::::   */
 /*   creat_philo.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
+/*   By: engooh <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/12 21:27:55 by christellen       #+#    #+#             */
-/*   Updated: 2022/05/15 10:58:26 by christellen      ###   ########.fr       */
+/*   Created: 2022/05/16 08:21:53 by engooh            #+#    #+#             */
+/*   Updated: 2022/05/17 18:02:32 by engooh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	value_philo(t_all *all, char **data)
+void	set_data_philo(t_data *data, char **av)
 {
-	all->nbp = ft_atoi(data[1]);
-	all->ttd = ft_atoi(data[2]);
-	all->tte = ft_atoi(data[3]);
-	all->tts = ft_atoi(data[4]);
-	if (data[5])
-		all->tts = ft_atoi(data[5]);
+	data->nbp_std = ft_atoi(av[1]);
+	data->ttd_std = ft_atoi(av[2]);
+	data->tte_std = ft_atoi(av[3]);
+	data->tts_std = ft_atoi(av[4]);
+	if (av[5])
+		data->ect_std = ft_atoi(av[5]);
 }
 
-t_all	*malloc_philo(char **av)
+t_data	*set_philo(char **av)
 {
-	t_all	*new;
+	t_data	*a;
 
-	new = malloc(sizeof(t_all));
-	value_philo(new, av);
-	new->philo = malloc(sizeof(t_philosopher) * (new->nbp + 1));
-	if (!new || !new->philo)
-	{ 
-		destroy_philo(new, -1, 0);
+	a = malloc(sizeof(t_data));
+	if (!a)
 		return (NULL);
-	}
-	return (new);
+	set_data_philo(a, av);
+	printf("%d philo \n", a->nbp_std);
+	a->philo = malloc(sizeof(t_philo) * (a->nbp_std + 1));
+	if (!a->philo)
+		return (NULL);
+	return (a);
 }
 
-int		thread_philo(t_all *all, int if_paire, int i)
+int	create_mutex(t_data *a, int i)
 {
-	if (!i)
-		if (pthread_create(&all->philo[all->nbp].thrid, NULL, status_dead, &all->philo[all->nbp]) < 0)
-			return (destroy_philo(all, -1, 1));
-	while (++i < all->nbp)
+	pthread_mutex_init(&a->eat, NULL);
+	pthread_mutex_init(&a->lock, NULL);
+	while (++i < a->nbp_std)
 	{
-		if (i % 2 == if_paire)
-			if (pthread_create(&all->philo[i].thrid, NULL, routine, &all->philo[i]) < 0)
-				return (destroy_philo(all, -1, 1));
+		a->philo[i].idx = i;
+		a->philo[i].ect = 0;
+		a->philo[i].data = a;
+		if (i == a->nbp_std - 1)
+			a->philo[i].next = 0;
+		else
+			a->philo[i].next = i + 1;
+		if (pthread_mutex_init(&a->philo[i].fork, NULL) < 0)
+			return (0);
+	}
+	return (1);
+}
+
+int	create_thread(t_data *a, int is_paire, int i)
+{
+	while (++i < a->nbp_std)
+	{
+		if (i % 2 == is_paire)
+			if (pthread_create(&a->philo[i].thrid, NULL,
+					routine, &a->philo[i]) < 0)
+				return (0);
 		usleep(1);
 	}
-	return (0);
+	return (1);
 }
 
-int		mutex_philo(t_all *all, int i)
+t_data	*init_thread(char **av)
 {
-	if (pthread_mutex_init(&all->main, NULL) < 0)
-		return (destroy_philo(all, -1, 1));
-	if (pthread_mutex_init(&all->sleep, NULL) < 0)
-		return (destroy_philo(all, -1, 1));
-	if (pthread_mutex_init(&all->if_dead, NULL) < 0)
-		return (destroy_philo(all, -1, 1));
-	while (++i < all->nbp)
-	{
-		all->philo[i].nbp = i;
-		all->philo[i].is_dead = 1;
-		all->philo[i].ptr_all = all;
-		if (i)
-			all->philo[i].prev_philo = &all->philo[i - 1];
-		if (pthread_mutex_init(&all->philo[i].eat, NULL) < 0)
-			return (destroy_philo(all, -1, 1));
-	}
-	all->philo[0].prev_philo = &all->philo[all->nbp - 1];
-	return (0);
-}
+	t_data		*a;
 
-t_all	*init_philo(char **av)
-{
-	t_all	*all;
-
-	all = malloc_philo(av);
-	if (mutex_philo(all, -1))
+	a = set_philo(av);
+	if (!a)
 		return (NULL);
-	all->genese = 0;
-	all->genese = timestamp();
-	printf("start reff %ld\n", all->genese);
-	if (thread_philo(all, 1, -1) || thread_philo(all, 0, -1))
+	if (!create_mutex(a, -1))
 		return (NULL);
-	return (all);
+	a->genese = timestamp();
+	if (!create_thread(a, 0, -1) || !create_thread(a, 1, -1))
+		return (NULL);
+	return (a);
 }

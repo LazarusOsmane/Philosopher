@@ -6,7 +6,7 @@
 /*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 14:16:49 by engooh            #+#    #+#             */
-/*   Updated: 2022/05/15 10:27:30 by christellen      ###   ########.fr       */
+/*   Updated: 2022/05/17 18:02:36 by engooh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 int	main(int ac, char **av)
 {
-	t_all	*all;
+	t_data	*data;
 
-	if (ac < 5)
-		return (1);
-	all = init_philo(av);
-	if (wait_philo(all, -1))
-		return (destroy_philo(all, -1, 1));
-	return (destroy_philo(all, -1, 0));
+	if (ac <= 5)
+		return (0);
+	data = init_thread(av);
+	wait_philo(data, -1);
+	destroy_philo(data, -1);
+	return (0);
 }

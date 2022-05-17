@@ -3,25 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   destroy_philo.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
+/*   By: engooh <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/13 02:52:08 by christellen       #+#    #+#             */
-/*   Updated: 2022/05/15 10:47:13 by christellen      ###   ########.fr       */
+/*   Created: 2022/05/17 10:00:00 by engooh            #+#    #+#             */
+/*   Updated: 2022/05/17 18:02:34 by engooh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../inc/philo.h"
 
-int     destroy_philo(t_all *all, int i, int val_ret)
+void	destroy_philo(t_data *a, int i)
 {
-    while (all && ++i < all->nbp)
-        pthread_mutex_destroy(&all->philo[i].eat);
-    pthread_mutex_destroy(&all->main);
-    pthread_mutex_destroy(&all->sleep);
-    pthread_mutex_destroy(&all->if_dead);
-    if (all->philo)
-        free(all->philo);
-    if (all)
-        free(all);
-    return (val_ret);
+	if (!a)
+		return ;
+	while (++i < a->nbp_std)
+		pthread_mutex_destroy(&a->philo[i].fork);
+	pthread_mutex_destroy(&a->lock);
+	pthread_mutex_destroy(&a->eat);
+	free(a->philo);
+	free(a);
 }
