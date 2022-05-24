@@ -12,11 +12,24 @@ long int	timestamp(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
+void	ft_usleep(ssize_t time)
+{
+	ssize_t		res;
+	ssize_t		ras;
+
+	res = timestamp() + time;
+	while (timestamp() < res)
+	{
+		if ()
+	}
+}
 
 int main(void)
 {
-	int	tabs[7] = {1, 2, 3, 4, 5, 6, 7};
+	long int start = timestamp();
 
-	printf("nbr %d\n", tabs[((1 - 1) + 7) % 7]);
+	printf("%ld\n", timestamp() - start);
+	ft_usleep(1000);
+	printf("%ld\n", timestamp() - start);
 	return (0);
 }

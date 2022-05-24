@@ -13,7 +13,7 @@ philo: $(OBJ)
 	gcc $(CFLAG) -c $^ -o $@ 
 
 ff: $(OBJ)
-	gcc -fsanitize=thread  $(CFLAG) $(OBJ) -o philo  share/libft/libft.a
+	gcc -fsanitize=thread $(CFLAG) $(OBJ) -o philo  share/libft/libft.a
 
 clean: 
 	rm src/*.o
