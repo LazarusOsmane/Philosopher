@@ -6,7 +6,7 @@
 /*   By: engooh <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 15:37:29 by engooh            #+#    #+#             */
-/*   Updated: 2022/05/24 14:08:22 by engooh           ###   ########.fr       */
+/*   Updated: 2022/05/26 14:22:00 by engooh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ int	status_death(t_data *a, int i)
 	while (++i < a->nbp_std)
 	{
 		pthread_mutex_lock(&a->lock);
-		if ((((timestamp() - a->philo[i].tte) >= a->ttd_std))
-			|| !(a->ect_std < 0 && a->philo[i].ect != a->ect_std))
+		if ((((timestamp() - a->philo[i].tte) >= a->ttd_std)
+					|| a->philo[i].ect == a->ect_std))
 		{
 			pthread_mutex_lock(&a->death);
 			a->dead = 0;
@@ -38,11 +38,9 @@ void	status_eat(t_philo *p)
 	if (!check_death(p))
 		return ;
 	pthread_mutex_lock(&p->data->lock);
-	pthread_mutex_lock(&p->data->eat);
 	p->ect++;
 	p->tte = timestamp();
 	printf("[%ld] [%d] is eating\n", p->tte - p->data->genese, p->idx);
-	pthread_mutex_unlock(&p->data->eat);
 	pthread_mutex_unlock(&p->data->lock);
 	ft_usleep(p->s_tte, p);
 }

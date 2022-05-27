@@ -5,41 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: engooh <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/20 15:37:15 by engooh            #+#    #+#             */
-/*   Updated: 2022/05/25 09:56:47 by engooh           ###   ########.fr       */
+/*   Created: 2022/05/27 09:20:22 by engooh            #+#    #+#             */
+/*   Updated: 2022/05/27 15:15:41 by engooh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include    "../inc/philo.h"
-
-int	check_death(t_philo *p)
-{
-	pthread_mutex_lock(&p->data->death);
-	if (!p->data->dead)
-	{
-		pthread_mutex_unlock(&p->data->death);
-		return (0);
-	}
-	pthread_mutex_unlock(&p->data->death);
-	return (1);
-}
-
-void	superviseur(t_data *a)
-{
-	while (42)
-		if (!status_death(a, -1))
-			return ;
-}
+#include "../inc/philo.h"
 
 int	main(int ac, char **av)
 {
-	t_data	*data;
-
-	if (ac < 4)
+	if (parse(ac, av))
 		return (0);
-	data = init_thread(av);
-	superviseur(data);
-	wait_philo(data, -1);
-	destroy_philo(data, -1);
 	return (0);
 }

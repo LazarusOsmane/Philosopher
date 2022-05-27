@@ -6,7 +6,7 @@
 /*   By: engooh <engooh@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/16 08:22:55 by engooh            #+#    #+#             */
-/*   Updated: 2022/05/24 18:01:52 by engooh           ###   ########.fr       */
+/*   Updated: 2022/05/27 15:14:47 by engooh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,19 @@ long int	timestamp(void)
 
 void	ft_usleep(ssize_t time, t_philo *p)
 {
-	ssize_t		start;
+	ssize_t		res;
+	double		wt;
 
-	start = timestamp();
-	while (timestamp() - start < time)
+	wt = time / 10;
+	res = timestamp() + time;
+	while (timestamp() < res)
 	{
+		if (time > 1000)
+			usleep(100);
+		else
+			usleep(wt);
 		if (!check_death(p))
-			return ;
+			break ;
 	}
 }
 
@@ -37,6 +43,8 @@ void	wait_philo(t_data *a, int i)
 	while (++i < a->nbp_std)
 		pthread_join(a->philo[i].thrid, NULL);
 }
+
+//take fork
 
 void	tack_forck(t_philo *p)
 {
@@ -57,8 +65,8 @@ void	tack_forck(t_philo *p)
 		pthread_mutex_lock(&p->data->philo[p->next].fork);
 		status_fork(p);
 		status_eat(p);
-		pthread_mutex_unlock(&p->data->philo[p->next].fork);
 		pthread_mutex_unlock(&p->fork);
+		pthread_mutex_unlock(&p->data->philo[p->next].fork);
 	}
 }
 
