@@ -1,4 +1,4 @@
-SRC = src/main.c src/creat_philo.c src/routine_philo.c src/destroy_philo.c src/status_philo.c
+SRC = src/main.c src/routine.c src/parse.c
 OBJ = ${SRC:%.c=%.o}
 CFLAG = -g3 -pthread -Wall -Wextra -Werror
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: engooh <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/27 09:02:38 by engooh            #+#    #+#             */
-/*   Updated: 2022/05/27 18:27:44 by engooh           ###   ########.fr       */
+/*   Created: 2022/05/28 18:45:47 by christellen       #+#    #+#             */
+/*   Updated: 2022/05/31 00:58:22 by christellen      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	parse(int ac, char **av)
 	return (0);
 }
 
-int	set_data(t_data *data, int ac, char **av)
+int set_data(t_data *data, char **av)
 {
 	data->nbp_std = ft_atoi(av[1]);
 	data->ttd_std = ft_atoi(av[2]);
@@ -48,12 +48,12 @@ int	set_data(t_data *data, int ac, char **av)
 		return (printf("Error: invalid argument can't be negative"));
 	if (data->tts_std < 0)
 		return (printf("Error: invalid argument can't be negative"));
-	if (data->tts_std < 0)
+	if (av[5] && data->ect_std < 0)
 		return (printf("Error: invalid argument can't be negative"));
 	return (0);
 }
 
-int	creat_mutex(t_data *data, int i)
+int	create_mutex(t_data *data, int i)
 {
 	if (pthread_mutex_init(&data->print, NULL) < 0)
 		return (0);
@@ -64,13 +64,21 @@ int	creat_mutex(t_data *data, int i)
 		data->philo[i].idx = i;
 		data->philo[i].ect = 0;
 		data->philo[i].tte = 0;
+		data->philo[i].acess = 1;
 		data->philo[i].data = data;
+		if (i == data->nbp_std - 1)
+			data->philo[i].next = &data->philo[0];
+		else 
+			data->philo[i].next = &data->philo[i + 1];
 		if (pthread_mutex_init(&data->philo[i].fork, NULL) < 0)
 			return (0);
 	}	
+    if (i == 1)
+        data->philo[0].next = NULL; 
+    return (1);
 }
 
-int	create_thread_mutex(t_data *data, int is_paire, int i)
+int	create_thread(t_data *data, int is_paire, int i)
 {
 	while (++i < data->nbp_std)
 	{
@@ -78,17 +86,23 @@ int	create_thread_mutex(t_data *data, int is_paire, int i)
 			if (pthread_create(&data->philo[i].thrid, NULL,
 						routine, &data->philo[i]) < 0)
 				return (0);
-		usleep(100);
 	}
-	if (i == 1)
-		data->philo[i].next = 0;
 	return (1);
 }
 
 int	init_philo(t_data *data, int ac, char **av)
 {
-	if (set_data(data, ac, av))
-		return (-1);
-	if ()
-	return (0);
+    t_philo *philo;
+
+	if (parse(ac, av) || set_data(data, av))
+		return (0);
+    philo = malloc(sizeof(t_philo) * (data->nbp_std));
+    if (!philo)
+        return (0);
+    data->philo = philo;
+    if (!create_mutex(data, -1))
+        return (0);
+    if (!create_thread(data, 1, -1) || !create_thread(data, 0, -1))
+        return (0);
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 14:17:07 by engooh            #+#    #+#             */
-/*   Updated: 2022/05/27 17:59:12 by engooh           ###   ########.fr       */
+/*   Updated: 2022/05/29 19:33:17 by christellen      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,17 @@ struct	s_data;
 typedef struct s_philo
 {
 	int					idx;
-	int					next;
 	int					ect;
 	long int			tte;
-	long int			s_tte;
-	long int			s_ttd;
-	long int			s_tts;
+	int					nbp_s;
+	long int			ttd_s;
+	long int			tte_s;
+	long int			tts_s;
+	long int			ect_s;
+    int                 acess;
+	long int			genese;
 	struct s_data		*data;
+    struct s_philo      *next;
 	pthread_mutex_t		fork;	
 	pthread_t			thrid;
 }	t_philo;
@@ -46,31 +50,20 @@ typedef struct s_data
 	long int			tts_std;
 	long int			ect_std;
 	t_philo				*philo;
-	pthread_mutex_t		eat;
-	pthread_mutex_t		all;
-	pthread_mutex_t		lock;
 	pthread_mutex_t		print;
+	pthread_mutex_t		time;
 	pthread_mutex_t		death;
-	int					tu_peut_lock;
 }	t_data;
 
-void	*routine(void *philo);
-int		parse(int ac, char **av);
-int		set_data(t_data *data, int ac, char **av);
-
-/*long int	timestamp(void);
-int			check_death(t_philo *p);
-void		*routine(void *philo);
-t_data		*init_thread(char **av);
-void		ft_usleep(long int time, t_philo *p);
-void		wait_philo(t_data *a, int i);
-void		superviseur(t_data *a);
-void		destroy_philo(t_data *a, int i);
-void		print_philo(t_philo *p, const char *str);
-int			status_death(t_data *a, int i);
-void		status_fork(t_philo *p);
-void		status_eat(t_philo *p);
-void		status_philo(t_philo *p);
-void		status_sleep(t_philo *p);
-void		status_think(t_philo *p);*/
+long int	timestamp(void);
+void		*routine(void *arg);
+int			parse(int ac, char **av);
+int			set_data(t_data *data, char **av);
+void		ft_usleep(ssize_t time, t_philo *p);
+int			init_philo(t_data *data, int ac, char **av);
+int			wait_philo(t_data *data, t_philo *philo, int i);
+void		destroy_philo(t_data *data, t_philo *philo, int i);
+int			print_philo(t_data *data, t_philo *philo, char *str, int size);
+void		status_eat(t_data *data, t_philo *philo);
+void		status_sleep_think(t_data *data, t_philo *philo);
 #endif 

@@ -1,4 +1,4 @@
-SRC = src/main.c src/parse.c
+SRC = src/main.c src/routine.c src/init.c src/destroy.c src/join.c src/status.c
 OBJ = ${SRC:%.c=%.o}
 CFLAG = -g3 -pthread -Wall -Wextra -Werror
 
@@ -14,6 +14,9 @@ philo: $(OBJ)
 
 ff: $(OBJ)
 	gcc -fsanitize=thread $(CFLAG) $(OBJ) -o philo  share/libft/libft.a
+
+dd: $(OBJ)
+	gcc -fsanitize=address $(CFLAG) $(OBJ) -o philo  share/libft/libft.a
 
 clean: 
 	rm src/*.o

@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   destroy.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/27 09:20:22 by engooh            #+#    #+#             */
-/*   Updated: 2022/05/28 19:11:22 by christellen      ###   ########.fr       */
+/*   Created: 2022/05/28 18:38:34 by christellen       #+#    #+#             */
+/*   Updated: 2022/05/28 19:09:47 by christellen      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-int	main(int ac, char **av)
+void destroy_philo(t_data *data, t_philo *philo, int i)
 {
-	t_data	data;
-
-	if (!init_philo(&data, ac, av))
-		return (0);
-	wait_philo(&data, data.philo, -1);
-	destroy_philo(&data, data.philo, -1);
-	return (0);
+    if (!data)
+        return ;
+    while (++i < data->nbp_std)
+        pthread_mutex_destroy(&philo[i].fork);
+    free(philo);
+    pthread_mutex_destroy(&data->death);
+    pthread_mutex_destroy(&data->print);
 }
