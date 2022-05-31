@@ -104,5 +104,5 @@ int	init_philo(t_data *data, int ac, char **av)
         return (0);
     if (!create_thread(data, 1, -1) || !create_thread(data, 0, -1))
         return (0);
-	return (1);
+    return (1);
 }

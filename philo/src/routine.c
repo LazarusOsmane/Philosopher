@@ -45,11 +45,11 @@ int	print_philo(t_data *data, t_philo *philo, char *str, int size)
 	write(1, "[", 1);
 	ft_putnbr_fd(timestamp() - philo->genese, 1);
 	write(1, "]", 1);
-	write(1, " ", 8);
+	write(1, " ", 1);
 	write(1, "[", 1);
 	ft_putnbr_fd(philo->idx, 1);
 	write(1, "]", 1);
-	write(1, " ", 8);
+	write(1, " ", 1);
 	write(1, str, size);
     pthread_mutex_unlock(&data->print);
 	return (0);
