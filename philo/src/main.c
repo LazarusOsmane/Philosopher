@@ -15,7 +15,7 @@
 void    superviseur(t_data *data)
 {
     while (42)
-        if (!status_death(data, -1))
+        if (!status_death(data, -1, 0))
             return ;
 }
 

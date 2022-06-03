@@ -66,7 +66,7 @@ int			wait_philo(t_data *data, t_philo *philo, int i);
 void		destroy_philo(t_data *data, t_philo *philo, int i);
 int			print_philo(t_data *data, t_philo *philo, char *str, int size);
 int         check_death(t_data *data, int r);
-int         status_death(t_data *data, int i);
 void		status_eat(t_data *data, t_philo *philo);
 void		status_sleep_think(t_data *data, t_philo *philo);
+int         status_death(t_data *data, int i, int limit_death);
 #endif 

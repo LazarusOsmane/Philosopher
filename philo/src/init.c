@@ -65,9 +65,9 @@ int	create_mutex(t_data *data, int i)
 		data->philo[i].ect = 0;
 		data->philo[i].tte = 0;
 		data->philo[i].genese = 0;
-		data->philo[i].acess = 1;
 		data->philo[i].data = data;
 		data->philo[i].tte_s = data->tte_std;
+		data->philo[i].nbp_s = data->nbp_std;
 		if (i == data->nbp_std - 1)
 			data->philo[i].next = &data->philo[0];
 		else 
