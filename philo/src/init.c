@@ -34,22 +34,22 @@ int	parse(int ac, char **av)
 
 int set_data(t_data *data, char **av)
 {
+    data->dead = 1;
 	data->nbp_std = ft_atoi(av[1]);
 	data->ttd_std = ft_atoi(av[2]);
 	data->tte_std = ft_atoi(av[3]);
 	data->tts_std = ft_atoi(av[4]);
 	if (av[5])
+    {
+        data->ect_if = 1;
 		data->ect_std = ft_atoi(av[5]);
-	if (data->nbp_std < 0)
+    }
+    else 
+        data->ect_if = 0;
+	if (data->nbp_std < 0 || data->ttd_std < 0 || data->tte_std < 0 || data->tts_std < 0 || (av[5] && data->ect_std < 0))
 		return (printf("Error: invalid argument can't be negative"));
-	if (data->ttd_std < 0)
-		return (printf("Error: invalid argument can't be negative"));
-	if (data->tte_std < 0)
-		return (printf("Error: invalid argument can't be negative"));
-	if (data->tts_std < 0)
-		return (printf("Error: invalid argument can't be negative"));
-	if (av[5] && data->ect_std < 0)
-		return (printf("Error: invalid argument can't be negative"));
+    if (av[5] && data->ect_std == 0)
+        return (printf("[0] [1] is died\n"));
 	return (0);
 }
 
@@ -64,8 +64,10 @@ int	create_mutex(t_data *data, int i)
 		data->philo[i].idx = i;
 		data->philo[i].ect = 0;
 		data->philo[i].tte = 0;
+		data->philo[i].genese = 0;
 		data->philo[i].acess = 1;
 		data->philo[i].data = data;
+		data->philo[i].tte_s = data->tte_std;
 		if (i == data->nbp_std - 1)
 			data->philo[i].next = &data->philo[0];
 		else 

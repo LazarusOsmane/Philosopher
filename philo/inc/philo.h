@@ -44,6 +44,7 @@ typedef struct s_data
 {
 	int					dead;
 	long int			genese;
+    int                 ect_if;
 	int					nbp_std;
 	long int			ttd_std;
 	long int			tte_std;
@@ -59,11 +60,13 @@ long int	timestamp(void);
 void		*routine(void *arg);
 int			parse(int ac, char **av);
 int			set_data(t_data *data, char **av);
-void		ft_usleep(ssize_t time, t_philo *p);
+void		ft_usleep(ssize_t time, t_data *data);
 int			init_philo(t_data *data, int ac, char **av);
 int			wait_philo(t_data *data, t_philo *philo, int i);
 void		destroy_philo(t_data *data, t_philo *philo, int i);
 int			print_philo(t_data *data, t_philo *philo, char *str, int size);
+int         check_death(t_data *data, int r);
+int         status_death(t_data *data, int i);
 void		status_eat(t_data *data, t_philo *philo);
 void		status_sleep_think(t_data *data, t_philo *philo);
 #endif 

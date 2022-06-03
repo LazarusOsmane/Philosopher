@@ -20,12 +20,11 @@ long int	timestamp(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-void	ft_usleep(ssize_t time, t_philo *p)
+void	ft_usleep(ssize_t time, t_data *data)
 {
 	ssize_t		res;
 	double		wt;
 
-	(void)p;
 	wt = time / 10;
 	res = timestamp() + time;
 	while (timestamp() < res)
@@ -34,14 +33,19 @@ void	ft_usleep(ssize_t time, t_philo *p)
 			usleep(100);
 		else
 			usleep(wt);
-		//if (!check_death(p))
-			//break ;
+		if (!check_death(data, 1))
+			return ;
 	}
 }
 
 int	print_philo(t_data *data, t_philo *philo, char *str, int size)
 {
     pthread_mutex_lock(&data->print);
+	if (!check_death(data, 1) && size != 5)
+    {
+        pthread_mutex_unlock(&data->print);
+		return (0);
+    }
 	write(1, "[", 1);
 	ft_putnbr_fd(timestamp() - philo->genese, 1);
 	write(1, "]", 1);
@@ -64,12 +68,16 @@ void	*routine(void *arg)
 	data = philo->data;
 	if (philo->idx % 2 == 0)
 	{
-		usleep(philo->tte_s / 10);
+		usleep(100);
 		philo->genese = timestamp();
 	}
 	else
 		philo->genese = timestamp();
-	status_eat(data, philo);
-	status_sleep_think(data, philo);
+    philo->tte = philo->genese;
+    while (check_death(data, 1))
+    {
+	    status_eat(data, philo);
+	    status_sleep_think(data, philo);
+    }
 	return (NULL);
 }

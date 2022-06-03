@@ -12,12 +12,20 @@
 
 #include "../inc/philo.h"
 
+void    superviseur(t_data *data)
+{
+    while (42)
+        if (!status_death(data, -1))
+            return ;
+}
+
 int	main(int ac, char **av)
 {
 	t_data	data;
 
 	if (!init_philo(&data, ac, av))
 		return (0);
+    superviseur(&data);
 	wait_philo(&data, data.philo, -1);
 	destroy_philo(&data, data.philo, -1);
 	return (0);
