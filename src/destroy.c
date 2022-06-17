@@ -1,32 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   destroy.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/27 09:20:22 by engooh            #+#    #+#             */
-/*   Updated: 2022/06/16 15:21:07 by engooh           ###   ########.fr       */
+/*   Created: 2022/05/28 18:38:34 by christellen       #+#    #+#             */
+/*   Updated: 2022/06/16 01:29:35 by engooh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../inc/philo.h"
 
-void	superviseur(t_data *data)
+void	destroy_philo(t_data *data, t_philo *philo, int i)
 {
-	while (42)
-		if (!status_death(data, -1, 0))
-			return ;
-}
-
-int	main(int ac, char **av)
-{
-	t_data	data;
-
-	if (!init_philo(&data, ac, av))
-		return (0);
-	superviseur(&data);
-	wait_philo(&data, data.philo, -1);
-	destroy_philo(&data, data.philo, -1);
-	return (0);
+	if (!data)
+		return ;
+	while (++i < data->nbp_std)
+	{
+		pthread_mutex_destroy(&philo[i].fork);
+		pthread_mutex_destroy(&philo[i].mutex_ect);
+		pthread_mutex_destroy(&philo[i].check_meal);
+		pthread_mutex_destroy(&philo[i].mutex_genese);
+	}
+	free(philo);
+	pthread_mutex_destroy(&data->death);
+	pthread_mutex_destroy(&data->print);
 }

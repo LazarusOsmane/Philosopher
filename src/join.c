@@ -1,32 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   join.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/27 09:20:22 by engooh            #+#    #+#             */
-/*   Updated: 2022/06/16 15:21:07 by engooh           ###   ########.fr       */
+/*   Created: 2022/05/28 19:05:07 by christellen       #+#    #+#             */
+/*   Updated: 2022/05/29 19:46:41 by christellen      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	superviseur(t_data *data)
+int	wait_philo(t_data *data, t_philo *philo, int i)
 {
-	while (42)
-		if (!status_death(data, -1, 0))
-			return ;
-}
-
-int	main(int ac, char **av)
-{
-	t_data	data;
-
-	if (!init_philo(&data, ac, av))
-		return (0);
-	superviseur(&data);
-	wait_philo(&data, data.philo, -1);
-	destroy_philo(&data, data.philo, -1);
+	while (++i < data->nbp_std)
+		if (pthread_join(philo[i].thrid, NULL))
+			return (printf("Error: thread %d can't be join\n", philo[i].idx));
 	return (0);
 }

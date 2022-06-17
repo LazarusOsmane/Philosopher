@@ -1,60 +1,49 @@
-#include <time.h>
 #include <stdio.h>
-#include <wait.h>
-# include <pthread.h>
-#include <sys/time.h>
+#include <unistd.h>
+#include <limits.h>
 
-long int	timestamp(void)
-{	
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+void	ft_putchar_fd(char c, int fd)
+{
+	write(fd, &c, 1);
 }
 
-
-
-int	check_death(int mut)
+int	ft_isdigit(int c)
 {
-	pthread_mutex_t	death;
-
-	if (pthread_mutex_init(&death, NULL))
-		return (0);
-	pthread_mutex_lock(&death);
-	if (42 == mut)
-	{
-		printf("ko\n");
-		pthread_mutex_unlock(&death);
-		return (0);
-	}
-	printf("ok\n");
-	pthread_mutex_unlock(&death);
-	return (1);
+	if (c >= '0' && c <= '9')
+		return (2048);
+	return (0);
 }
 
-void	ft_usleep(ssize_t time)
+int	ft_atoi(const char *nptr)
 {
-	ssize_t		res;
-	ssize_t		ras;
+	long int	n;
 
-	res = timestamp();
-	ras = res + 10;
-	res += time;
-	while (timestamp() < res)
+	n = 0;
+	while (*nptr == ' ' || (*nptr >= '\t' && *nptr <= '\r'))
+		nptr++;
+	if (*nptr == '-' || *nptr == '+')
 	{
-		if (timestamp() >= ras && check_death(45))
+		if (*nptr++ == '-')
 		{
-			ras += 10;
+			while (ft_isdigit(*nptr))
+			{
+				n = (n * 10) - (*nptr++ - '0');
+				if (n < INT_MIN)
+					return (0);
+			}
 		}
 	}
+	while (ft_isdigit(*nptr))
+	{
+		n = (n * 10) + (*nptr++ - '0');
+		if (n > INT_MAX)
+			return (-1);
+	}
+	return (n);
 }
 
 int main(void)
 {
-	long int start = timestamp();
-
-	printf("%ld\n", timestamp() - start);
-	ft_usleep(500);
-	printf("%ld\n", timestamp() - start);
+	printf("%d\n", ft_atoi("0000000111"));
 	return (0);
 }

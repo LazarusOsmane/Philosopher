@@ -6,66 +6,73 @@
 /*   By: christellenkouka <christellenkouka@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 14:17:07 by engooh            #+#    #+#             */
-/*   Updated: 2022/05/23 18:12:12 by engooh           ###   ########.fr       */
+/*   Updated: 2022/06/16 01:16:58 by engooh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
-/*	"../src" */
 # include <pthread.h>
 # include <stdlib.h>
 # include <stdio.h>
 # include <string.h>
+# include <unistd.h>
+# include <limits.h>
 # include <sys/time.h>
-# include "../share/libft/libft.h"
 
 struct	s_data;
 
 typedef struct s_philo
 {
-	int					idx;
-	int					next;
-	int					ect;
-	long int			tte;
-	long int			s_tte;
-	long int			s_ttd;
-	long int			s_tts;
-	struct s_data		*data;
-	pthread_mutex_t		fork;	
-	pthread_t			thrid;
+	pthread_t		thrid;
+	struct s_data	*data;
+	struct s_philo	*next;
+	pthread_mutex_t	fork;	
+	pthread_mutex_t	mutex_genese;
+	pthread_mutex_t	mutex_ect;
+	pthread_mutex_t	check_meal;
+	int				idx;
+	int				ect;
+	int				nbp_s;
+	int				acess;
+	long int		tte;
+	long int		ttd_s;
+	long int		tte_s;
+	long int		tts_s;
+	long int		ect_s;
+	long int		genese;
 }	t_philo;
 
 typedef struct s_data
 {
-	int					dead;
-	long int			genese;
-	int					nbp_std;
-	long int			ttd_std;
-	long int			tte_std;
-	long int			tts_std;
-	long int			ect_std;
-	t_philo				*philo;
-	pthread_mutex_t		eat;
-	pthread_mutex_t		all;
-	pthread_mutex_t		lock;
-	pthread_mutex_t		death;
-	int					tu_peut_lock;
+	pthread_mutex_t	print;
+	pthread_mutex_t	time;
+	pthread_mutex_t	death;
+	t_philo			*philo;
+	int				dead;
+	int				ect_if;
+	int				nbp_std;
+	long int		genese;
+	long int		genese2;
+	long int		ttd_std;
+	long int		tte_std;
+	long int		tts_std;
+	long int		ect_std;
 }	t_data;
 
+int			ft_isdigit(int c);
+int			ft_atoi(const char *nptr);
+int			parse(int ac, char **av);
+int			set_data(t_data *data, char **av);
+int			init_philo(t_data *data, int ac, char **av);
+int			wait_philo(t_data *data, t_philo *philo, int i);
+int			print_philo(t_data *data, t_philo *philo, char *str, int size);
+int			check_death(t_data *data, int r);
+int			status_death(t_data *data, int i, int limit_death);
 long int	timestamp(void);
-int			check_death(t_philo *p);
-void		*routine(void *philo);
-t_data		*init_thread(char **av);
-void		ft_usleep(long int time, t_philo *p);
-void		wait_philo(t_data *a, int i);
-void		superviseur(t_data *a);
-void		destroy_philo(t_data *a, int i);
-void		print_philo(t_philo *p, const char *str);
-int			status_death(t_data *a, int i);
-void		status_fork(t_philo *p);
-void		status_eat(t_philo *p);
-void		status_philo(t_philo *p);
-void		status_sleep(t_philo *p);
-void		status_think(t_philo *p);
+void		*routine(void *arg);
+void		ft_usleep(ssize_t time, t_data *data);
+void		destroy_philo(t_data *data, t_philo *philo, int i);
+void		status_eat(t_data *data, t_philo *philo);
+void		status_sleep_think(t_data *data, t_philo *philo);
 #endif 
